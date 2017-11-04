@@ -195,7 +195,6 @@ def uniformCostSearch(problem):
             print "found a path"
             path = currentNode.absPath
             path.pop(0)
-            print path
             return path
 
         visited.append(currentNode.loc)
@@ -232,7 +231,40 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # initialize the priority queue
+    priorityQueue = PriorityQueue()
+    # make the start state coordinates into a node
+    startNode = ucsNode(problem.getStartState(),"","",0)
+    # insert the Start state into the priority queue
+    priorityQueue.push(startNode,0)
+
+    visited = []
+
+    while True and not priorityQueue.isEmpty():
+        # get the current node
+        currentNode = priorityQueue.pop()
+
+        if problem.isGoalState(currentNode.loc):
+            print "found a path"
+            path = currentNode.absPath
+            path.pop(0)
+            return path
+
+        visited.append(currentNode.loc)
+
+        adjacentNodes = problem.getSuccessors(currentNode.loc)
+
+        for node in adjacentNodes:
+            if node[0] not in visited:
+                #calculate the cost so far
+                costSoFar = currentNode.costSoFar + node[2];
+                # calculate heuristics
+                heuristics = heuristic(node[0], problem);
+                newNode = ucsNode(node[0],node[1],currentNode.absPath,costSoFar + heuristics)
+                # add the node to the priority queue
+                priorityQueue.push(newNode, currentNode.costSoFar + node[2])
+
+    return None
 
 
 # Abbreviations
